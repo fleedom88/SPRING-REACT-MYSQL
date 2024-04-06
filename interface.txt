@@ -35,7 +35,7 @@ Http Status - 401 (Unauthorized)
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -76,7 +76,7 @@ Http Status - 400 (Bad Request)
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -113,7 +113,7 @@ boardListItem
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -150,7 +150,7 @@ currentListItem
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -187,7 +187,7 @@ popularWordList
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -224,7 +224,7 @@ searchList
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -261,7 +261,7 @@ relativeWorkList
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -301,7 +301,7 @@ Http Status - 400 (Bad Request)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -351,7 +351,7 @@ Http Status - 200 (OK)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -383,7 +383,7 @@ commentListItem{
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -419,7 +419,7 @@ Http Status - 400 (Bad Request)
 
 
 - 존재하지 않는 유저
-Http Status - 400 (Internal Server Error)
+Http Status - 401 (Unauthorized)
 {
     code: "NE",
     message:"No Existed User."
@@ -430,7 +430,7 @@ Http Status - 400 (Internal Server Error)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -460,13 +460,13 @@ Http Status - 400 (Bad Request)
 
 
 - 존재하지 않는 유저
-Http Status - 400 (Internal Server Error)
+Http Status - 401 (Unauthorized)
 {
     code: "NE",
     message:"No Existed User."
 }
 
-- 존재하지 않는 유저
+- 인증 실패
 Http Status - 403 (Forbidden)
 {
     code: "NP",
@@ -477,7 +477,7 @@ Http Status - 403 (Forbidden)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -522,7 +522,7 @@ Http Status - 403 (Forbidden)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -551,7 +551,7 @@ Http Status - 200 (OK)
 실패
 
 - 존재하지 않는 유저
-Http Status - 400 (Internal Server Error)
+Http Status - 401 (Unauthorized)
 {
     code: "NU",
     message:"No Existed User."
@@ -568,7 +568,7 @@ Http Status - 403 (Forbidden)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -603,7 +603,7 @@ Http Status - 400 (Internal Server Error)
 
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -639,7 +639,7 @@ boardListItem
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 
@@ -673,7 +673,7 @@ Http Status - 400 (Internal Server Error)
 - 데이터베이스 에러
 Http Status - 500 (Internal Server Error)
 {
-    code: "DE",
+    code: "DBE",
     message:"Database Error."
 }
 ============================================================================
