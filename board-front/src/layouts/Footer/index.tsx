@@ -18,7 +18,7 @@ const onNaverBlogIconButtonClickHandler =()=>{
 //          render: 푸터 레이아웃 렌더링            //    
   return (
     <div id='footer'>
-        <div className='container'>
+        <div className='footer-container'>
             <div className='footer-top'>
                 <div className='footer-logo-box'>
                     <div className='icon-box'>
