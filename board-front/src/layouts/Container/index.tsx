@@ -12,7 +12,7 @@ const {pathname} = useLocation();
 //          render: 헤더 레이아웃   렌더링             //
   return (
     <>
-      {pathname}
+      {/* {pathname} */}
       <Header/>
       <Outlet/>
       {pathname !== AUTH_PATH() && <Footer/>}     
