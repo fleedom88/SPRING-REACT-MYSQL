@@ -22,7 +22,7 @@ public class UserEntity {
     private String nickname;
     private String telNumber;
     private String address;
-    private String addessDetail;
+    private String addressDetail;
     private String profileImage;
     private boolean agreedPersonal;
 
@@ -32,7 +32,7 @@ public class UserEntity {
         this.nickname = dto.getNickname();
         this.telNumber = dto.getTelNumber();
         this.address = dto.getAddress();
-        this.addessDetail = dto.getAddressDetail();
+        this.addressDetail = dto.getAddressDetail();
         this.agreedPersonal = dto.getAgreedPersonal();
     }
     

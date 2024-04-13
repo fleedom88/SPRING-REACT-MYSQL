@@ -21,10 +21,10 @@ public class SignUpRequestDto {
     @NotBlank  @Size(min = 8, max = 20)
     private String password;
 
-    @NotBlank   @Pattern(regexp = "^[0-9]{11,13}$")
+    @NotBlank   
     private String nickname;
 
-    @NotBlank
+    @NotBlank   @Pattern(regexp = "^[0-9]{11,13}$")
     private String telNumber;
 
     @NotBlank
