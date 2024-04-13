@@ -10,14 +10,14 @@ import com.fleedom88.boardback.dto.response.ResponseDto;
 import lombok.Getter;
 
 @Getter
-public class SignUpResponseBto extends ResponseDto {
+public class SignUpResponseDto extends ResponseDto {
 
-    public SignUpResponseBto() {
+    public SignUpResponseDto() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);//부모의 생성자 호출
     }
     
-    public static ResponseEntity<SignUpResponseBto> success() {
-        SignUpResponseBto result = new SignUpResponseBto();
+    public static ResponseEntity<SignUpResponseDto> success() {
+        SignUpResponseDto result = new SignUpResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     
