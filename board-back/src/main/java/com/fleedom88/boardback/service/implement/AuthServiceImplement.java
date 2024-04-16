@@ -6,10 +6,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fleedom88.boardback.dto.request.auth.SignInRequestDto;
 import com.fleedom88.boardback.dto.request.auth.SignUpRequestDto;
 import com.fleedom88.boardback.dto.response.ResponseDto;
+import com.fleedom88.boardback.dto.response.auth.SignInResponseDto;
 import com.fleedom88.boardback.dto.response.auth.SignUpResponseDto;
 import com.fleedom88.boardback.entity.UserEntity;
+import com.fleedom88.boardback.provider.JwtProvider;
 import com.fleedom88.boardback.repository.UserRepository;
 import com.fleedom88.boardback.service.AuthService;
 
@@ -34,7 +37,8 @@ public class AuthServiceImplement implements AuthService { // 구현체
     
             
     private final UserRepository userRepository; 
-
+    private final JwtProvider  jwtProvider;
+    
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -67,6 +71,36 @@ public class AuthServiceImplement implements AuthService { // 구현체
         }
 
         return SignUpResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+       
+        String token = null;
+               
+        try {
+            
+            String email = dto.getEmail();
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if (userEntity == null) {
+                return SignInResponseDto.signInFailed();
+            }
+
+            String password = dto.getPassword();
+            String encodedPassword = userEntity.getPassword();
+            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+            if(isMatched == false){
+                return SignInResponseDto.signInFailed();
+            }
+
+            token = jwtProvider.create(email);//이메일로 토큰 만듦
+
+       } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+       }
+
+       return SignInResponseDto.success(token);
     }
     
 }
