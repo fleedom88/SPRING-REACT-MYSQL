@@ -11,7 +11,7 @@ interface Props{
     setValue: Dispatch<SetStateAction<string>>;
     error: boolean;
 
-    icon?: string; //필수가 아닌 선택인 요소
+    icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon'; //필수가 아닌 선택인 요소
     onButtonClick?: () => void; 
 
 
@@ -47,19 +47,17 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props:Props, ref) =>{ //us
             <div className={error ?'inputbox-container-error': 'inputbox-container'}>
                 {/* ref를 쓰는 이유는 엔터쳤을 때 다음요소로 넘어가기 위함 */}
                 <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeyDown}/>
-                {onButtonClick !== undefined &&(
+                {onButtonClick !== undefined &&
                     <div className='icon-button'>
-                        {icon !== undefined &&(<div className={`icon ${icon}`}></div>)}
-                        <div className='icon eye-light-off-icon'></div>
+                        {icon !== undefined &&<div className={`icon ${icon}`}></div>}
                     </div>
-                )}
-                <div className='icon-button'>
+                }
+                <div className='icon-button' onClick={onButtonClick}>
                     <div className='icon eye-light-off-icon'></div>
                 </div>
             </div>
-            {message !== undefined && (
-                <div className='inputbox-message'>{message}</div>
-            )}            
+            {message !== undefined && <div className='inputbox-message'>{message}</div>
+            }            
         </div>
     )
 });
