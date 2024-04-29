@@ -1,6 +1,5 @@
 import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, forwardRef } from 'react';
 import './style.css';
-import { error } from 'console';
 
 //          interface: Input Box 컴포넌트 Properties    //
 interface Props{
@@ -17,7 +16,7 @@ interface Props{
 
     message?: string;
 
-    onKeyDown?: (Event: KeyboardEvent<HTMLInputElement>) => void;
+    onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 //          component: Input Box 컴포넌트               //
@@ -49,14 +48,14 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props:Props, ref) =>{ //us
                 <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>
                 {onButtonClick !== undefined &&
                     <div className='icon-button' onClick={onButtonClick}>
-                        {icon !== undefined &&<div className={`icon ${icon}`}></div>}
+                        {icon !== undefined && (<div className={`icon ${icon}`}></div>) }
                     </div>
                 }
             </div>
-            {message !== undefined && <div className='inputbox-message'>{message}</div>
-            }            
+            {message !== undefined && <div className='inputbox-message'>{message}</div>}            
         </div>
     )
+    
 });
 
 export default InputBox;
