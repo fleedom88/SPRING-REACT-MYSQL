@@ -1,6 +1,13 @@
 import React, { ChangeEvent, KeyboardEvent, useRef, useState } from 'react';
 import './style.css';
 import InputBox from 'components/inputBox';
+import { SignInRequestDto } from 'apis/request/auth';
+import { signInRequest } from 'apis';
+import { SignInResponseDto } from 'apis/response/auth';
+import { ResponseDto } from 'apis/response';
+import { useCookies } from 'react-cookie';
+import { MAIN_PATH } from 'constant';
+import { useNavigate } from 'react-router-dom';
 
 //          component: 인증 화면 컴포넌트             //
 export default function Authentication() {
@@ -8,6 +15,11 @@ export default function Authentication() {
   //       state: 화면상태              리터럴 타입 2가지 값만//
   const [view, setView] = useState<'sign-in' | 'sign-up'>('sign-in');
 
+  //       state: 쿠키 상태               //
+  const [cookies, setCookie] = useCookies();
+
+  //       function: 네비게이트 함수      //
+  const navigator = useNavigate();
 
 //          component: sign in card 컴포넌트             //
 const SignInCard = () => {
@@ -32,9 +44,44 @@ const SignInCard = () => {
   //       state: 에러 타입 상태                     //
   const [error, setError] = useState<boolean>(false);
 
+  //      function: sing in response 처리 함수                      //
+  const signInResponse = (responseBody: SignInResponseDto | ResponseDto | null) => {
+    if (!responseBody){
+      alert('네트워크 상태가 이상입니다.');
+      return;
+    }
+    const { code } = responseBody;
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code === 'SF' || code === 'VF') setError(true);
+    if (code !== 'SU') return;
+
+    const { token, expirationTime} = responseBody as SignInResponseDto;
+    const now = new Date().getTime();
+    const expires = new Date(now + expirationTime * 1000);
+    
+    setCookie('accessToken', token, { expires, path: MAIN_PATH() });
+    navigator(MAIN_PATH());
+
+  }
+
+  //      event handler: 이메일 변경 이벤트 처리                      //
+  const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) =>{
+    setError(false);
+    const { value } = event.target;
+    setEmail(value);
+  }
+
+  //      event handler: 비밀번호 변경 이벤트 처리                      //
+  const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) =>{
+    setError(false);
+    const { value } = event.target;
+    setPassword(value);
+  }
+
   //       event handler: 로그인 버튼 클릭 이벤트 처리 함수           //
   const onSignInButtonClickHandler = () =>{
-
+    const requestBody: SignInRequestDto = {email, password};
+    signInRequest(requestBody).then(signInResponse);
   }
 
 //       event handler: 로그인 버튼 클릭 이벤트 처리 함수           //
@@ -76,8 +123,8 @@ const onSignUpLinkClickHandler = () =>{
           <div className='auth-card-title-box'>
             <div className='auth-card-title'>{'로그인'}</div>
           </div> 
-          <InputBox ref={emailRef} label='이메일 주소' type='text' placeholder='이메일 주소를 입력해주세요.' error={error} value={email} setValue={setEmail} onKeyDown={onEmailKeyDownHandler}/>
-          <InputBox ref={passwordRef} label='패스워드' type={passwordType} placeholder='비밀번호를 입력해주세요.' error={error} value={password} setValue={setPassword} icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler}/>
+          <InputBox ref={emailRef} label='이메일 주소' type='text' placeholder='이메일 주소를 입력해주세요.' error={error} value={email} onChange={onEmailChangeHandler} onKeyDown={onEmailKeyDownHandler}/>
+          <InputBox ref={passwordRef} label='패스워드' type={passwordType} placeholder='비밀번호를 입력해주세요.' error={error} value={password} onChange={onPasswordChangeHandler} icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler}/>
         </div>
         <div className='auth-card-bottom'>
           {error === true &&
@@ -132,7 +179,7 @@ const SignUpCard = () =>{
   //          state: 패스워드 버튼 아이콘 상태                  //
   const [passwordButtonIcon,setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
   //          state: 패스워드 확인 아이콘 상태                  //
-  const [passwordCheckButtonIcon,setpasswordCheckButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
+  const [passwordCheckButtonIcon,setPasswordCheckButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
   
   
   //          event Handler: 이메일 변경 이벤트 처리          //
@@ -145,12 +192,12 @@ const SignUpCard = () =>{
     const {value} = event.target;
     setPassword(value);
   };
-  //          event Handler: 패스워드 확인 변경 이벤트 처리          //
+  //          event Handler: 패스워드 확인 이벤트 처리          //
   const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const {value} = event.target;
     setPasswordCheck(value);
   };
-  //          event Handler: 패스워드 확인 변경 이벤트 처리          //
+  //          event Handler: 패스워드 변경 버튼 이벤트 처리          //
   const onPasswordButtonChangeHandler = () => {
     if(passwordButtonIcon === 'eye-light-off-icon'){
       setPasswordButtonIcon('eye-light-on-icon');
@@ -161,14 +208,14 @@ const SignUpCard = () =>{
       setPasswordType('password');
     }
   };
-  //          event Handler: 패스워드 확인 버튼 클릭 이벤트 처리          //
+  //          event Handler: 패스워드 확인 버튼 이벤트 처리          //
   const onPasswordCheckButtonChangeHandler = () => {
     if(passwordButtonIcon === 'eye-light-off-icon'){
-      setPasswordButtonIcon('eye-light-on-icon');
+      setPasswordCheckButtonIcon('eye-light-on-icon');
       setPasswordType('text');
     }
     else{
-      setPasswordButtonIcon('eye-light-off-icon');
+      setPasswordCheckButtonIcon('eye-light-off-icon');
       setPasswordType('password');
     }
   };
@@ -202,7 +249,7 @@ const SignUpCard = () =>{
         </div>
         <InputBox ref={emailRef} type='text' label='이메일 주소*' placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler} error={isEmailError} message={emailErrorMessage} /> 
         <InputBox ref={passwordRef} type={passwordType} label='비밀번호*' placeholder='비밀번호를 입력해주세요.' value={password}  onChange={onPasswordChangeHandler} error={isPasswordError} message={passwordErrorMessage} icon={passwordButtonIcon} /> 
-        <InputBox ref={passwordCheckRef} type={passwordCheckType} label='비밀번호 확인*' placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler} message={passwordCheckErrorMessage} icon={passwordCheckButtonIcon} /> 
+        <InputBox ref={passwordCheckRef} type={passwordCheckType} label='비밀번호 확인*' placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler} error={isPasswordError} message={passwordCheckErrorMessage} icon={passwordCheckButtonIcon}/> 
       </div>
       <div className='auth-card-bottom'>
         <div className='black-large-full-button'>{'다음 단계'}</div>

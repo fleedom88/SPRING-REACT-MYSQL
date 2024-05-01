@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, forwardRef } from 'react';
+import { ChangeEvent, KeyboardEvent, forwardRef } from 'react';
 import './style.css';
 
 //          interface: Input Box 컴포넌트 Properties    //
@@ -7,7 +7,7 @@ interface Props{
     type: 'text' | 'password';
     placeholder: string;
     value: string;
-    setValue: Dispatch<SetStateAction<string>>;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     error: boolean;
 
     icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon'; //필수가 아닌 선택인 요소
@@ -24,13 +24,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props:Props, ref) =>{ //us
 
 //          state: properties                           //
     const {label, type, placeholder, value, error, icon, message} = props;
-    const {setValue, onButtonClick, onKeyDown} = props;
-
-//          event handler: input 값 변경 이벤트 처리 함수           //
-    const onChangeHandler=(event: ChangeEvent<HTMLInputElement>)=>{
-        const {value} = event.target;
-        setValue(value);
-    };
+    const {onChange, onButtonClick, onKeyDown} = props;
 
 //          event handler: input 키 이벤트 처리 함수           //
     const onKeyDownHandler=(event: KeyboardEvent<HTMLInputElement>)=>{
@@ -45,7 +39,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props:Props, ref) =>{ //us
             <div className='inputbox-label'>{label}</div>
             <div className={error ?'inputbox-container-error': 'inputbox-container'}>
                 {/* ref를 쓰는 이유는 엔터쳤을 때 다음요소로 넘어가기 위함 */}
-                <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>
+                <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDownHandler}/>
                 {onButtonClick !== undefined &&
                     <div className='icon-button' onClick={onButtonClick}>
                         {icon !== undefined && (<div className={`icon ${icon}`}></div>) }
