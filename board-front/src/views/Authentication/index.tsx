@@ -1,9 +1,9 @@
-import React, { ChangeEvent, KeyboardEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import InputBox from 'components/inputBox';
-import { SignInRequestDto } from 'apis/request/auth';
-import { signInRequest } from 'apis';
-import { SignInResponseDto } from 'apis/response/auth';
+import { SignInRequestDto, SignUpRequestDto } from 'apis/request/auth';
+import { SignUpRequest, signInRequest } from 'apis';
+import { SignInResponseDto, SignUpResponseDto } from 'apis/response/auth';
 import { ResponseDto } from 'apis/response';
 import { useCookies } from 'react-cookie';
 import { MAIN_PATH } from 'constant';
@@ -164,7 +164,7 @@ const SignUpCard = () =>{
   const addressDetailRef = useRef<HTMLInputElement | null>(null);
 
   //          state: 페이지 번호 상태                   //
-  const [page, setPage] = useState<1 | 2> (2);
+  const [page, setPage] = useState<1 | 2> (1);
   //          state: 이메일 상태                        //
   const [email, setEmail] = useState<string>('');
   //          state: 패스워드 상태                      //
@@ -223,6 +223,34 @@ const SignUpCard = () =>{
   //          function: 다음 주소 검색 팝업 오픈 함수         //
   const open = useDaumPostcodePopup();
   
+  //          function: sign up response 처리함수             //
+  const signUpResponse = (reponseBody: SignUpResponseDto | ResponseDto | null) => {
+    if(!reponseBody){
+      alert('네트워크 이상입니다.');
+      return;
+    }
+    const { code } = reponseBody;
+    if(code === 'DE'){
+      setEmailError(true);
+      setEmailErrorMessage('중복되는 이메일 주소입니다.');
+    }
+    if(code === 'DN'){
+      setNicknameError(true);
+      setNicknameErrorMessage('중복되는 닉네임입니다.');
+    }
+    if(code === 'DN'){
+      setTelNumberError(true);
+      setTelNumberErrorMessage('중복되는 핸드폰 번호입니다.');
+    }
+    if(code === 'VF') alert('모든 값을 입력하세요,');
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+
+    if(code !== 'SU') return;
+
+    setView('sign-in');
+
+  }
+
   //          event Handler: 이메일 변경 이벤트 처리          //
   const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const {value} = event.target;
@@ -290,13 +318,13 @@ const SignUpCard = () =>{
 
   //          event Handler: 패스워드 확인 버튼 클릭 이벤트 처리          //
   const onPasswordCheckButtonClickHandler = () => {
-    if(passwordButtonIcon === 'eye-light-off-icon'){
+    if(passwordCheckButtonIcon === 'eye-light-off-icon'){
       setPasswordCheckButtonIcon('eye-light-on-icon');
-      setPasswordType('text');
+      setPasswordCheckType('text');
     }
     else{
       setPasswordCheckButtonIcon('eye-light-off-icon');
-      setPasswordType('password');
+      setPasswordCheckType('password');
     }
   };
   //          event Handler: 주소 버튼 클릭 이벤트 처리          //
@@ -308,11 +336,13 @@ const SignUpCard = () =>{
   const onNextButtonClickHandler = () =>{
     const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
     const isEmailPattern = emailPattern.test(email);
+    console.log("이메일"+email.trim().length);
     if(!isEmailPattern){
       setEmailError(true);
       setEmailErrorMessage('이메일 주소 포멧이 맞지 않습니다.');
     }
-    const isCheckedPassword = password.trim.length >= 8;
+    const isCheckedPassword = password.trim().length >= 8;
+    console.log("비밀번호"+password.trim().length);
     if(!isCheckedPassword){
       setPasswordError(true);
       setPasswordErrorMessage('비밀번호는 8자 이상 입력해주세요.');
@@ -328,6 +358,52 @@ const SignUpCard = () =>{
   //          event Handler: 회원가입 버튼 클릭 이벤트 처리          //
   const onSignUpButtonClickHandler = () =>{
     alert('회원가입 버튼!');
+    const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
+    const isEmailPattern = emailPattern.test(email);
+    if(!isEmailPattern){
+      setEmailError(true);
+      setEmailErrorMessage('이메일 주소 포멧이 맞지 않습니다.');
+    }
+    const isCheckedPassword = password.trim().length >= 8;
+    if(!isCheckedPassword){
+      setPasswordError(true);
+      setPasswordErrorMessage('비밀번호는 8자 이상 입력해주세요.');
+    }
+    const isEqualPassword = password === passwordCheck;
+    if(!isEqualPassword){
+      setPasswordCheckError(true);
+      setPasswordCheckErrorMessage('비밀번호가 일치하지 않습니다.');
+    }
+    if(!isEmailPattern || !isCheckedPassword || !isEqualPassword){
+      setPage(1);
+      return;
+    }
+    const hadNickname = nickname.trim().length > 0;
+    if (!hadNickname){
+      setNicknameError(true);
+      setNicknameErrorMessage('닉네임을 입력해주세요.');
+    }
+    const telNumberPattern = /^[0-9]{11,13}$/;
+    const isTelNumberPattern = telNumberPattern.test(telNumber);
+    if(!isTelNumberPattern){
+      setTelNumberError(true);
+      setTelNumberErrorMessage('숫자만 입력해주세요.');
+    }
+    const hasAddress = address.trim().length > 0;
+    if (!hasAddress){
+      setAddressError(true);
+      setAddressErrorMessage('주소를 선택해주세요.');
+      onAddressButtonClickHandler();
+    }
+    if (!agreedPersonal)setAgreedPersonalError(true);
+    
+    if(!hadNickname || !isTelNumberPattern|| !agreedPersonal) return;
+
+    const requestBody: SignUpRequestDto = {
+      email, password, nickname, telNumber, address, addressDetail, agreedPersonal
+    };
+
+    SignUpRequest(requestBody).then(signUpResponse); //signUpRequest API 호출후 signUpResponse메서드 실행
   }
 
   //          event Handler: 로그인 링크 클릭 이벤트 처리          //
@@ -350,9 +426,7 @@ const SignUpCard = () =>{
   //          event Handler: 패스워드 확인 키 다운 이벤트 처리          //
   const onPasswordCheckKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) =>{
     if(event.key !== 'Enter') return;
-    if(!nicknameRef.current) return;
     onNextButtonClickHandler();
-    nicknameRef.current.focus();
   }
   //          event Handler: 닉네임 키 다운 이벤트 처리          //
   const onNinknameKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) =>{
@@ -381,9 +455,19 @@ const SignUpCard = () =>{
   const onComplete = (data: Address) => {
     const { address } = data;
     setAddress(address);
+    setAddressError(false);
+    setAddressErrorMessage('');
     if(!addressDetailRef.current) return;
     addressDetailRef.current.focus();
   }
+  
+  //        effect: 페이지가 변경될 때 마다 실행될 함수               //
+  useEffect( () =>{
+    if(page === 2) {     
+      if(!nicknameRef.current) return;      
+      nicknameRef.current.focus();
+    }
+  }, [page])
 
   //          render: sign up card 컴포넌트     렌더링        //
   return (
