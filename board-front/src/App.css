@@ -17,6 +17,11 @@ body{
   font-family: 'Pretendard-Regular'; 
 }
 
+.divider {
+  border-top: 1px solid rgba(0, 0, 0, 0.2) ;
+  width: 100%;
+}
+
 .black-button{
   border-radius: 46px;
   width: 95px;
@@ -182,4 +187,12 @@ body{
 
 .check-ring-light-icon{
   background-image: url(assets/image/check-ring-light.png);
+}
+
+.image-box-light-icon {
+  background-image: url(assets/image/image-box-light.png);
+}
+
+.close-icon {
+  background-image: url(assets/image/close.png);
 }

@@ -2,8 +2,12 @@ import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from '
 import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
-import { useCookies } from 'react-cookie';
+import { Cookies, useCookies } from 'react-cookie';
 import { useBoardStore, useLoginUserStore } from 'stores';
+import { fileUploadRequest, postBoardRequest } from 'apis';
+import { PostBoardRequestDto } from 'apis/request/board';
+import { PostBoardResponsedto } from 'apis/response/board';
+import { ResponseDto } from 'apis/response';
 
 //          component: 헤더 레이아웃                //
 export default function Header() {
@@ -13,7 +17,7 @@ const {loginUser, setLoginUser, resetLoginUser} = useLoginUserStore();
 //          state: path 상태                      //
 const { pathname } = useLocation();
 //          state: cookie 상태                      //
-const [cookie,setCookie] = useCookies();
+const [cookies,setCookie] = useCookies();
 //        state: 로그인 상태                        //
 const [isLogin, setLogin] = useState<boolean>(false);
 //        state: 인증 페이지 상태                        //
@@ -157,20 +161,52 @@ const UploadButton = () =>{
 //      state: 게시물 상태                      //
   const { title, content, boardImageFileList, resetBoard} = useBoardStore();
 
-//      event handler: 업로드 버튼 클릭 이벤트 처리 함수        //
-  const onUploadButtonClickHandler = () =>{
+//      function: post board response 처리 함수         //
+ const postBoardResponse = (responseBody: PostBoardResponsedto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'DBE') alert('데이터베이스 오류입니다.');
+    if(code === 'AF' || code === 'NU')navigate(AUTH_PATH());      
+    if(code === 'VF') alert('제목과 내용은 필수입니다.');
+    if(code !== 'SU') return;
+    
+    
+    resetBoard();
+    if(!loginUser) return;
+    const { email } = loginUser;
+    navigate(USER_PATH(email));
+ }
 
+//      event handler: 업로드 버튼 클릭 이벤트 처리        //
+  const onUploadButtonClickHandler = async() =>{ //foreach동기처리가 안됨
+    const accessToken = cookies.accessToken;
+    if(!accessToken) return;
+
+    const boardImageList: string[] = [];
+
+    for (const file of boardImageFileList){
+      const data = new FormData();
+      data.append('file', file);
+
+      const url = await fileUploadRequest(data);
+
+      if(url) boardImageList.push(url);
+    }
+
+
+    const requestBody: PostBoardRequestDto = {
+      title, content, boardImageList
+    }
+    postBoardRequest(requestBody, accessToken).then(postBoardResponse);
   }
 
 //        render:  업로드 버튼 컴포넌트 렌더링      //
-  return <div className='black-button' onClick={onUploadButtonClickHandler}>{'업로드'}</div>;
-
-//        render:  업로드 불가 버튼 컴포넌트 렌더링      //
-  if(!title && content){
+  if(title && content)
+  return <div className='black-button' onClick={onUploadButtonClickHandler}>{'업로드'}</div>;   
+//        render:  업로드 버튼 컴포넌트 렌더링      //
   return <div className='disable-button'>{'업로드'}</div>;
-  }
+};
 
-}
 //      effect: pathname 변경될 때 마다 실행될 함수         //
 useEffect(()=>{
 
