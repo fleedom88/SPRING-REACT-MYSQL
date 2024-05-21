@@ -15,7 +15,7 @@ public interface ResponseCode {
     
     //http Status 401
     public static final String SIGN_IN_FAIL = "SF";
-    public static final String AUTHORIZATION_FAIL = "SF";
+    public static final String AUTHORIZATION_FAIL = "AF";
 
     //http Status 403
     public static final String NO_PERMISSION = "NP";

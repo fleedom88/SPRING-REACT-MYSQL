@@ -28,8 +28,8 @@ public class FileServiceImplement implements FileService {
         String originalFileName = file.getOriginalFilename();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String uuid = UUID.randomUUID().toString();
-        String savaFileName = uuid + extension;
-        String savePath = filePath + savaFileName;
+        String saveFileName = uuid + extension;
+        String savePath = filePath + saveFileName;
 
         try {
             file.transferTo(new File(savePath)); //해당경로로 저장
@@ -38,7 +38,7 @@ public class FileServiceImplement implements FileService {
             return null;
         }
 
-        String url = fileUrl + savaFileName;
+        String url = fileUrl + saveFileName;
         return url;
     }
 
