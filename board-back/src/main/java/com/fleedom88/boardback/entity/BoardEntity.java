@@ -41,7 +41,7 @@ public class BoardEntity {
         this.title = dto.getTitle();
         this.content = dto.getContent();
         this.writeDatetime = writeDatetime;
-        this.favoriteCount = 0;
+        this.favoriteCount = 0; 
         this.commentCount = 0;
         this.viewCount = 0;
         this.writerEmail = email;
@@ -49,6 +49,14 @@ public class BoardEntity {
 
     public void increaseViewCount () {
         this.viewCount ++;
+    }
+
+    public void increaseFavoriteCount () {
+        this.favoriteCount ++;
+    }
+
+    public void decreaseFavoriteCount () {
+        this.favoriteCount --;
     }
 
 }

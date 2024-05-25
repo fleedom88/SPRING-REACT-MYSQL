@@ -8,6 +8,8 @@ import com.fleedom88.boardback.repository.resultSet.GetBoardResultSet;
 
 public interface BoardRepository extends JpaRepository<BoardEntity,String>{
     
+    boolean existsByBoardNumber(Integer boardNumber);
+
     BoardEntity findByBoardNumber(Integer boardNumber);
 
     @Query(
