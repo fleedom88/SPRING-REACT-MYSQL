@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fleedom88.boardback.dto.request.board.PostBoardRequestDto;
+import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
+import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.fleedom88.boardback.service.BoardService;
 
@@ -34,6 +37,14 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping("/{boardNumber}/favorite-list")
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
+        @PathVariable("boardNumber") Integer boardNumber
+    ){
+        ResponseEntity<? super GetFavoriteListResponseDto> response = boardService.getFavoriteList(boardNumber);
+        return response;
+    }
+
     @PostMapping("")        //부모 객체도 가져 올 수 있다.
     public ResponseEntity<? super PostBoardReponseDto> postBoard (
         @RequestBody @Valid PostBoardRequestDto requestBody,
@@ -41,6 +52,16 @@ public class BoardController {
     )
     {
         ResponseEntity<? super PostBoardReponseDto> response = boardService.postBoard(requestBody, email);
+        return response;
+    }
+
+    @PostMapping("/{boardNumber}/comment")
+    public ResponseEntity<? super PostCommentResponseDto> postComment(
+        @RequestBody @Valid PostCommentRequestDto requestBody,
+        @PathVariable("boardNumber") Integer boardNumber,
+        @AuthenticationPrincipal String email 
+    ){
+        ResponseEntity<? super PostCommentResponseDto> response = boardService.PostComment(requestBody, boardNumber, email);
         return response;
     }
 

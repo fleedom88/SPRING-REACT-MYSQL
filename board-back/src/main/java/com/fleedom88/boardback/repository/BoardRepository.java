@@ -26,7 +26,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity,String>{
         FROM board AS B
             INNER JOIN user AS U
             ON B.writer_email = U.email
-        WHERE board_number  = 3
+        WHERE board_number  = ?1
         """,
         nativeQuery=true
     )
