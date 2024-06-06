@@ -3,6 +3,7 @@ package com.fleedom88.boardback.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import com.fleedom88.boardback.dto.request.board.PostBoardRequestDto;
 import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
@@ -71,6 +73,14 @@ public class BoardController {
         @AuthenticationPrincipal String email
     ){                  //부모타입까지반환
         ResponseEntity<? super PutFavoriteResponseDto> response = boardService.putFavorite(boardNumber, email);
+        return response;
+    }
+
+    @PatchMapping("{boardNumber}/increase-view-count")
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(
+        @PathVariable("boardNumber") Integer boardNumber
+    ) {
+        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
         return response;
     }
 
