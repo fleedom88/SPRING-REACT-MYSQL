@@ -83,9 +83,9 @@ export const getBoardRequest = async (boardNumber: number | string) => {
 }
 
 export const increaseViewCountRequest = async (boardNumber: number | string) => {
-    const result = axios.patch(INCREASE_VIEW_COUNT_URL(boardNumber))
+    const result = await axios.patch(INCREASE_VIEW_COUNT_URL(boardNumber))
     .then(response => {
-        const responseBody: IncreaseViewCountResponseDto = response.data
+        const responseBody: IncreaseViewCountResponseDto = response.data;
         return responseBody;
     })
     .catch(error => {

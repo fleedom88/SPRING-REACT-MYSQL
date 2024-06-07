@@ -28,7 +28,7 @@ export default function BoardDetail() {
   const navigator = useNavigate();
 
   //        function: increase view count response 처리함수     //
-  const increaseViewCountResposne (responseBody: IncreaseViewCountResponseDto | ResponseDto | null) {
+  const increaseViewCountResposne = (responseBody: IncreaseViewCountResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
     const {code} = responseBody;
     if(code ==='NB') alert('존재하지 않는 게시물입니다.');
