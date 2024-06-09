@@ -14,6 +14,7 @@ import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
 public interface BoardService {
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber);
     ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber);
+    ResponseEntity<? super GetFavoriteListResponseDto> getCommentList(Integer boardNumber);
 
     ResponseEntity<? super PostBoardReponseDto> postBoard(PostBoardRequestDto dto, String email);
     ResponseEntity<? super PostCommentResponseDto> PostComment(PostCommentRequestDto dto, Integer boardNumber ,String email);

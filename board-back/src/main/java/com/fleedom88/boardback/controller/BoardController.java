@@ -3,7 +3,6 @@ package com.fleedom88.boardback.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,6 +46,22 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping("/{boardNumber}/comment-list")
+    public ResponseEntity<? super IncreaseViewCountResponseDto> getCommentList(
+        @PathVariable("boardNumber") Integer boardNumber
+    ) {
+        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
+        return response;
+    }
+
+    @GetMapping("/{boardNumber}/increase-view-count")
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(
+        @PathVariable("boardNumber") Integer boardNumber
+    ) {
+        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
+        return response;
+    }
+
     @PostMapping("")        //부모 객체도 가져 올 수 있다.
     public ResponseEntity<? super PostBoardReponseDto> postBoard (
         @RequestBody @Valid PostBoardRequestDto requestBody,
@@ -76,12 +91,6 @@ public class BoardController {
         return response;
     }
 
-    @PatchMapping("{boardNumber}/increase-view-count")
-    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(
-        @PathVariable("boardNumber") Integer boardNumber
-    ) {
-        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
-        return response;
-    }
+
 
 }

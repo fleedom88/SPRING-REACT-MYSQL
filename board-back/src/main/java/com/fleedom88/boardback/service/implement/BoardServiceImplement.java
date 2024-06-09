@@ -187,6 +187,12 @@ public class BoardServiceImplement implements BoardService {
         return IncreaseViewCountResponseDto.success();
     }
 
+    @Override
+    public ResponseEntity<? super GetFavoriteListResponseDto> getCommentList(Integer boardNumber) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCommentList'");
+    }
+
 
    
 }
