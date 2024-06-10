@@ -14,6 +14,7 @@ import com.fleedom88.boardback.dto.request.board.PostBoardRequestDto;
 import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
@@ -47,10 +48,10 @@ public class BoardController {
     }
 
     @GetMapping("/{boardNumber}/comment-list")
-    public ResponseEntity<? super IncreaseViewCountResponseDto> getCommentList(
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(
         @PathVariable("boardNumber") Integer boardNumber
     ) {
-        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
+        ResponseEntity<? super GetCommentListResponseDto> response = boardService.getCommentList(boardNumber);
         return response;
     }
 

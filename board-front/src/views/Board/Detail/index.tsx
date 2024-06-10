@@ -11,13 +11,15 @@ import more from'assets/image/more.png'
 import { useLoginUserStore } from 'stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getBoardRequest, getCommentListRequest, getFavoriteListRequest, increaseViewCountRequest } from 'apis';
+import { deleteBoardRequest, getBoardRequest, getCommentListRequest, getFavoriteListRequest, increaseViewCountRequest, postCommentRequest, putFavoriteRequest } from 'apis';
 import getBoardResponseDto from 'apis/response/board/get-board.response.dto';
 import { ResponseDto } from 'apis/response';
-import { IncreaseViewCountResponseDto, GetFavoriteListResponseDto } from 'apis/response/board';
+import { IncreaseViewCountResponseDto, GetFavoriteListResponseDto, PutFavoriteResponseDto, PostCommentResponseDto, DeleteBoardResponseDto } from 'apis/response/board';
 
 import dayjs from 'dayjs';
 import GetCommentListResponseDto from 'apis/response/board/get-comment-list.response.dto';
+import { useCookies } from 'react-cookie';
+import { PostCommentRequestDto } from 'apis/request/board';
 
 //          component: 게시물 상세 화면 컴포넌트             //
 export default function BoardDetail() {
@@ -26,6 +28,8 @@ export default function BoardDetail() {
   const { boardNumber } = useParams();
   //          state: 로그인 유저 상태                         //
   const { loginUser } = useLoginUserStore();
+  //          state: 쿠키 상태                                //
+  const [cookies, setCookies] = useCookies();
 
   //        function: 네비게이트 함수                         //
   const navigator = useNavigate();
@@ -56,7 +60,20 @@ export default function BoardDetail() {
     return date.format('YYYY. MM .DD');
   }
   
-  
+  //          function: delete board response 처리 함수            //
+  const deleteBoardResponse =(responseBody: DeleteBoardResponseDto | ResponseDto | null) => {
+    if(!responseBody) return;
+    const { code } = responseBody;
+    if(code === 'AF') alert('잘못된 접근입니다.')
+    if(code === 'NU') alert('존재하지 않는 유저입니다.')
+    if(code === 'NB') alert('존재하지 않는 게시물입니다.')
+    if(code === 'AF') alert('인증에 실패했습니다.')
+    if(code === 'NP') alert('권한이 없습니다.')
+    if(code === 'DBE') alert('데이터베이스 오류입니다.')
+
+    if(code !== 'SU') return;
+    navigator(MAIN_PATH());
+  }
   //          function: get board response 처리 함수            //
   const getBoardResponse = (responseBody: getBoardResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
@@ -99,10 +116,9 @@ export default function BoardDetail() {
 
   //          event handler: 삭제 버튼 클릭 이벤트 처리
   const onDeleteButtonClickHandler = () => {
-    if(!board || !loginUser) return;
+    if(!boardNumber || !board || !loginUser|| !cookies.accessToken) return;
     if(loginUser.email !== board.writerEmail) return;
-    // TODO: Delete Request
-    navigator(MAIN_PATH());
+    deleteBoardRequest(boardNumber, cookies.accessToken).then(deleteBoardResponse);
   }
 
   //          effect: 게시물 번호 path variable이 바뀔 때 마다 게시물 불러오기//
@@ -168,7 +184,7 @@ export default function BoardDetail() {
     //                state: 댓글 리스트 보기 상태                   //
     const [showComment, setShowComment] = useState<boolean>(false);
     //                state: 댓글 상태                   //
-    const [Comment, setComment] = useState<string>('');
+    const [comment, setComment] = useState<string>('');
 
     //                function: get favorite list response 처리 함수                     //
     const getFavoriteListResponse = (responseBody: GetFavoriteListResponseDto | ResponseDto | null) => {
@@ -203,8 +219,44 @@ export default function BoardDetail() {
 
     //                event handler: 좋아요 클릭 이벤트 처리                //
     const onFavoriteClickHandler = () => {
+      if(!boardNumber || !loginUser || !cookies.accessToken) return;
       setFavorite(!isFavorite);
+      putFavoriteRequest(boardNumber, cookies.accessToken).then(putFavoriteResponse);
     }
+
+    //                function: put favorite response 처리 함수                     //
+    const putFavoriteResponse = (responseBody: PutFavoriteResponseDto | ResponseDto | null) => {
+      if(!responseBody) return;
+      const { code } = responseBody;
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NU') alert('존재하지 않는 유저입니다.');
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !=='SU') return;
+
+      if(!boardNumber) return;
+      getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
+    }
+
+    //                function: put comment response 처리 함수                     //
+    const postCommentResponse = (responseBody: PostCommentResponseDto | ResponseDto | null) => {
+      if(!responseBody) return;
+      const { code } = responseBody;
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NU') alert('존재하지 않는 유저입니다.');
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !=='SU') return;
+
+      if(!boardNumber) return;
+
+      setComment('');
+
+      getCommentListRequest(boardNumber).then(getCommentListResponse);
+    }
+
     //                event handler: 좋아요 상자보기 클릭 이벤트 처리                //
     const onShowFavoriteClickHandler = () => {
       setShowFavorite(!showFavorite);
@@ -215,8 +267,9 @@ export default function BoardDetail() {
     }
     //                event handler: 댓글 작성 버튼 클릭 이벤트 처리                //
     const onCommentSubmitButtonClickHandler = () => {
-      if (!Comment) return ;
-      alert('!!');
+      if (!Comment || !boardNumber || !loginUser || !cookies.accessToken) return ;
+      const requestBody: PostCommentRequestDto = { content: comment};
+      postCommentRequest(boardNumber,requestBody,cookies.accessToken).then(postCommentResponse);
     }
     //                event handler: 댓글 변경 이벤트 처리               //
     const onCommentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -297,9 +350,9 @@ export default function BoardDetail() {
         {loginUser !== null &&
           <div className='board-detail-bottom-comment-input-box'>
             <div className='board-detail-bottom-comment-input-container'>
-                <textarea ref={commentRef} className='board-detail-bottom-comment-textarea' placeholder='댓글을 작성해주세요.' value={Comment} onChange={onCommentChangeHandler} />
+                <textarea ref={commentRef} className='board-detail-bottom-comment-textarea' placeholder='댓글을 작성해주세요.' value={comment} onChange={onCommentChangeHandler} />
                 <div className='board-detail-bottom-comment-button-box'>
-                  <div className={ Comment === ''? 'disable-button':'black-button'} onClick={onCommentSubmitButtonClickHandler} >{'댓글달기'}</div>
+                  <div className={ comment === ''? 'disable-button':'black-button'} onClick={onCommentSubmitButtonClickHandler} >{'댓글달기'}</div>
                 </div>
             </div>
           </div>

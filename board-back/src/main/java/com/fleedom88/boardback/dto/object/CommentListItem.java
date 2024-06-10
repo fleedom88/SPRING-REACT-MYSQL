@@ -19,10 +19,10 @@ public class CommentListItem {
     private String content;
 
     public CommentListItem(GetCommentListResultSet resultSet){
-        this.profileImage = resultSet.getNickname();
-        this.writeDatetime = resultSet.getProfileIamge();
-        this.nickname = resultSet.getWriteDatetime();
-        this.content = resultSet.getProfileIamge();
+        this.nickname = resultSet.getNickname();
+        this.profileImage = resultSet.getProfileIamge();
+        this.writeDatetime = resultSet.getWriteDatetime();
+        this.content = resultSet.getContent();
     }
 
     public static List<CommentListItem> copyList(List<GetCommentListResultSet> resultSets) {

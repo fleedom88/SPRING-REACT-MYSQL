@@ -14,17 +14,17 @@ import com.fleedom88.boardback.repository.resultSet.GetCommentListResultSet;
 import lombok.Getter;
 
 @Getter
-public class GetCommentResponseDto extends ResponseDto {
+public class GetCommentListResponseDto extends ResponseDto {
 
-    private List<CommentListItem> favoriteList;
+    private List<CommentListItem> commentList;
 
-    private GetCommentResponseDto(List<GetCommentListResultSet> resultSets ) {
+    private GetCommentListResponseDto(List<GetCommentListResultSet> resultSets ) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.favoriteList = CommentListItem.copyList(resultSets);
+        this.commentList = CommentListItem.copyList(resultSets);
     }
 
-    public static ResponseEntity<GetCommentResponseDto> succcess(List<GetCommentListResultSet> resultSets) {
-        GetCommentResponseDto result = new GetCommentResponseDto(resultSets);
+    public static ResponseEntity<GetCommentListResponseDto> succcess(List<GetCommentListResultSet> resultSets) {
+        GetCommentListResponseDto result = new GetCommentListResponseDto(resultSets);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

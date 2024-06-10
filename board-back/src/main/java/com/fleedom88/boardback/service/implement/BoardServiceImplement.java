@@ -9,6 +9,7 @@ import com.fleedom88.boardback.dto.request.board.PostBoardRequestDto;
 import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.ResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
@@ -24,6 +25,7 @@ import com.fleedom88.boardback.repository.FavoriteRepository;
 import com.fleedom88.boardback.repository.ImageRepository;
 import com.fleedom88.boardback.repository.UserRepository;
 import com.fleedom88.boardback.repository.resultSet.GetBoardResultSet;
+import com.fleedom88.boardback.repository.resultSet.GetCommentListResultSet;
 import com.fleedom88.boardback.repository.resultSet.GetFavoriteListResultSet;
 import com.fleedom88.boardback.service.BoardService;
 
@@ -80,6 +82,23 @@ public class BoardServiceImplement implements BoardService {
 
         return GetFavoriteListResponseDto.succcess(resultSets);
 
+    }
+
+    @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber) {
+        
+        List<GetCommentListResultSet> resultSets = new ArrayList<>();
+        try {
+            boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+            if(!existedBoard) return GetCommentListResponseDto.noExistBoard();
+
+            resultSets = commentRepository.getCommentList(boardNumber);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetCommentListResponseDto.succcess(resultSets);
     }
 
 
@@ -187,11 +206,7 @@ public class BoardServiceImplement implements BoardService {
         return IncreaseViewCountResponseDto.success();
     }
 
-    @Override
-    public ResponseEntity<? super GetFavoriteListResponseDto> getCommentList(Integer boardNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCommentList'");
-    }
+    
 
 
    
