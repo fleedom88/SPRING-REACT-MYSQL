@@ -4,9 +4,9 @@ import './style.css';
 //            interface: 페이지네이션 컴포넌트 Properties       //
 interface Props {
   currentPage: number;
-  setCurrentPage: Dispatch<SetStateAction<Number>>;
   currentSection: number;
-  setCurrentSection: Dispatch<SetStateAction<Number>>;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  setCurrentSection: Dispatch<SetStateAction<number>>;
 
   viewPageList: number[];
   totalSection: number;
