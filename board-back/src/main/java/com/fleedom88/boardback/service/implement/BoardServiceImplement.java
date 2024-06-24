@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.fleedom88.boardback.dto.request.board.PatchBoardRequestDto;
 import com.fleedom88.boardback.dto.request.board.PostBoardRequestDto;
 import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.ResponseDto;
@@ -16,6 +17,7 @@ import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
+import com.fleedom88.boardback.dto.response.board.PatchBoardResponseDto;
 import com.fleedom88.boardback.entity.BoardEntity;
 import com.fleedom88.boardback.entity.CommentEntity;
 import com.fleedom88.boardback.entity.FavoriteEntity;
@@ -51,7 +53,7 @@ public class BoardServiceImplement implements BoardService {
         try {
 
             resultSet = boardRepository.getBoard(boardNumber);
-            if (resultSet == null) return GetBoardResponseDto.notExistBoard();
+            if (resultSet == null) return GetBoardResponseDto.noExistBoard();
             
             imageEntities = imageRepository.findByBoardNumber(boardNumber);
 
@@ -109,7 +111,7 @@ public class BoardServiceImplement implements BoardService {
         try {
 
             boolean existedEmail = userRepository.existsByEmail(email);
-            if (!existedEmail) return PostBoardReponseDto.notExistedUser(); 
+            if (!existedEmail) return PostBoardReponseDto.noExistedUser(); 
 
             BoardEntity boardEntity = new BoardEntity(dto, email);
             boardRepository.save(boardEntity);
@@ -192,6 +194,42 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardNumber, String email) {
+        try {
+            
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null) return PatchBoardResponseDto.noExsitBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if(!existedUser) return PatchBoardResponseDto.noExsitUser();
+
+            String writerEmail = boardEntity.getWriterEmail();
+            boolean isWriter = writerEmail.equals(writerEmail);
+            if(!isWriter) return PatchBoardResponseDto.noPermission();
+
+            boardEntity.patchBoard(dto);
+            boardRepository.save(boardEntity);
+
+            imageRepository.deleteByBoardNumber(boardNumber);
+            List<String> boardImageList = dto.getBoardImageList();
+            List<ImageEntity> imageEntities = new ArrayList<>();
+
+            for (String image: boardImageList) {
+                ImageEntity imageEntity = new ImageEntity(boardNumber, image);
+                imageEntities.add(imageEntity);
+            }
+
+            imageRepository.saveAll(imageEntities);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PatchBoardResponseDto.success();
+    }
+
+    @Override
     public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardNumber) {
         try {
             BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
@@ -232,6 +270,8 @@ public class BoardServiceImplement implements BoardService {
         }
         return DeleteBoardResponseDto.success();
     }
+
+
 
     
 
