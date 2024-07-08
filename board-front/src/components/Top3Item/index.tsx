@@ -18,10 +18,10 @@ export default function Top3Item({top3ListItem}: Props) {
 
 
 //          function: 네비게이트 함수                       //
-//   const navigator = new Navigator();
+//   const navigate = new Navigator();
 //          event handler:  게시물 아이템 클릭 이벤트 처리 함수   //
  const onClickHandler = () => {
-    // navigator(boardNumber);
+    // navigate(boardNumber);
  }
 
 

@@ -13,15 +13,18 @@ import com.fleedom88.boardback.dto.response.board.DeleteBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.fleedom88.boardback.dto.response.board.PatchBoardResponseDto;
 import com.fleedom88.boardback.entity.BoardEntity;
+import com.fleedom88.boardback.entity.BoardListViewEntity;
 import com.fleedom88.boardback.entity.CommentEntity;
 import com.fleedom88.boardback.entity.FavoriteEntity;
 import com.fleedom88.boardback.entity.ImageEntity;
+import com.fleedom88.boardback.repository.BoardListViewRepository;
 import com.fleedom88.boardback.repository.BoardRepository;
 import com.fleedom88.boardback.repository.CommentRepository;
 import com.fleedom88.boardback.repository.FavoriteRepository;
@@ -43,6 +46,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final FavoriteRepository favoriteRepository;
+    private final BoardListViewRepository boardListViewRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
@@ -102,6 +106,21 @@ public class BoardServiceImplement implements BoardService {
             return ResponseDto.databaseError();
         }
         return GetCommentListResponseDto.succcess(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+        
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            boardListViewEntities = boardListViewRepository.findByOrderByWriteDatetimeDesc();         
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetLatestBoardListResponseDto.success(boardListViewEntities);
     }
 
 
@@ -270,10 +289,6 @@ public class BoardServiceImplement implements BoardService {
         }
         return DeleteBoardResponseDto.success();
     }
-
-
-
-    
 
 
    

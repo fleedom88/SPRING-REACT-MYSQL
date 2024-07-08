@@ -17,6 +17,7 @@ import com.fleedom88.boardback.dto.request.board.PostBoardRequestDto;
 import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
@@ -65,6 +66,12 @@ public class BoardController {
         @PathVariable("boardNumber") Integer boardNumber
     ) {
         ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardNumber);
+        return response;
+    }
+
+    @GetMapping("/latest-list")
+    public ResponseEntity<? super GetLatestBoardListResponseDto>getLatestBoardList(){
+        ResponseEntity<? super GetLatestBoardListResponseDto> response = boardService.getLatestBoardList();
         return response;
     }
 
