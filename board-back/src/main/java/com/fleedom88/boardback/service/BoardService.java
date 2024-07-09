@@ -8,6 +8,7 @@ import com.fleedom88.boardback.dto.request.board.PostCommentRequestDto;
 import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
@@ -21,6 +22,7 @@ public interface BoardService {
     ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber);
     ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber);
     ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
+    ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
     ResponseEntity<? super PostBoardReponseDto> postBoard(PostBoardRequestDto dto, String email);
     ResponseEntity<? super PostCommentResponseDto> PostComment(PostCommentRequestDto dto, Integer boardNumber ,String email);
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email) ;

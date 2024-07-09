@@ -1,5 +1,8 @@
 package com.fleedom88.boardback.service.implement;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,7 @@ import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
@@ -123,6 +127,25 @@ public class BoardServiceImplement implements BoardService {
         return GetLatestBoardListResponseDto.success(boardListViewEntities);
     }
 
+    @Override
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+
+            Date beforeWeek = Date.from(Instant.now().minus(7, ChronoUnit.DAYS));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String sevenDaysAgo = simpleDateFormat.format(beforeWeek);
+            
+            boardListViewEntities = boardListViewRepository.findTop3ByWriteDatetimeGreaterThanOrderByFavoriteCountDescCommentCountDescViewCountDescWriteDatetimeDesc(sevenDaysAgo);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetTop3BoardListResponseDto.success(boardListViewEntities);
+    }
 
     @Override
     public ResponseEntity<? super PostBoardReponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -289,6 +312,8 @@ public class BoardServiceImplement implements BoardService {
         }
         return DeleteBoardResponseDto.success();
     }
+
+
 
 
    
