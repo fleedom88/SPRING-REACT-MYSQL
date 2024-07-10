@@ -2,6 +2,8 @@ import React from 'react'
 import './style.css';
 import defaultProfileImage from 'assets/image/defaultProfileImage.jpg';
 import { BoardListItem } from 'types/interface';
+import { BOARD_DETAIL_PATH, BOARD_PATH } from 'constant';
+import { useNavigate } from 'react-router-dom';
 
 interface Props{
     top3ListItem: BoardListItem
@@ -18,16 +20,17 @@ export default function Top3Item({top3ListItem}: Props) {
 
 
 //          function: 네비게이트 함수                       //
-//   const navigate = new Navigator();
+  const navigate = useNavigate();
+  
 //          event handler:  게시물 아이템 클릭 이벤트 처리 함수   //
  const onClickHandler = () => {
-    // navigate(boardNumber);
+    navigate(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardNumber));
  }
 
 
 //          render: Top3 List Item 컴포넌트 렌더링          //
   return (
-    <div className='top-3-list-item' style={{backgroundImage: `url(${boardTitleImage})`}}>
+    <div className='top-3-list-item' style={{backgroundImage: `url(${boardTitleImage})`}} onClick={onClickHandler}>
         <div className='top-3-list-item-main-box'>
             <div className='top-3-list-item-top'>
                 <div className='top-3-list-item-profile-box'>
