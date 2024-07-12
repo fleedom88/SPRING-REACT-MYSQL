@@ -17,6 +17,7 @@ import com.fleedom88.boardback.dto.response.board.GetBoardResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetSearchBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
@@ -28,11 +29,13 @@ import com.fleedom88.boardback.entity.BoardListViewEntity;
 import com.fleedom88.boardback.entity.CommentEntity;
 import com.fleedom88.boardback.entity.FavoriteEntity;
 import com.fleedom88.boardback.entity.ImageEntity;
+import com.fleedom88.boardback.entity.SearchLogEntity;
 import com.fleedom88.boardback.repository.BoardListViewRepository;
 import com.fleedom88.boardback.repository.BoardRepository;
 import com.fleedom88.boardback.repository.CommentRepository;
 import com.fleedom88.boardback.repository.FavoriteRepository;
 import com.fleedom88.boardback.repository.ImageRepository;
+import com.fleedom88.boardback.repository.SearchLogRepository;
 import com.fleedom88.boardback.repository.UserRepository;
 import com.fleedom88.boardback.repository.resultSet.GetBoardResultSet;
 import com.fleedom88.boardback.repository.resultSet.GetCommentListResultSet;
@@ -50,6 +53,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final FavoriteRepository favoriteRepository;
+    private final SearchLogRepository searchLogRepository;
     private final BoardListViewRepository boardListViewRepository;
 
     @Override
@@ -146,6 +150,33 @@ public class BoardServiceImplement implements BoardService {
         }
         return GetTop3BoardListResponseDto.success(boardListViewEntities);
     }
+
+    @Override
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord,String preSearchWord) {
+        
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            
+            boardListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrderByWriteDatetimeDesc(searchWord, searchWord);
+                        
+            SearchLogEntity searchLogEntity = new SearchLogEntity(searchWord,preSearchWord,false);
+            searchLogRepository.save(searchLogEntity);
+            
+            boolean relation = preSearchWord != null;
+            if (relation) {
+                searchLogEntity = new SearchLogEntity(preSearchWord, searchWord, relation);
+                searchLogRepository.save(searchLogEntity);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetSearchBoardListResponseDto.success(boardListViewEntities);
+    }
+
 
     @Override
     public ResponseEntity<? super PostBoardReponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -314,7 +345,4 @@ public class BoardServiceImplement implements BoardService {
     }
 
 
-
-
-   
 }

@@ -93,7 +93,7 @@ export const deleteBoardRequest = async (boardNumber:number | string, accessToke
     return result;   
 };
 
-const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/searchs/popular-list`;
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
 
 export const getPopularListRequest = async () => {
     const result = await axios.get(GET_POPULAR_LIST_URL())

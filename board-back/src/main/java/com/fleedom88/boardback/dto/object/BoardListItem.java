@@ -19,6 +19,7 @@ public class BoardListItem {
     private String boardTitleImage;
     private int favoriteCount;
     private int commentCount;
+    private int viewCount;
     private String writeDatetime;
     private String writerNickname;
     private String writerProfileImage;
@@ -30,9 +31,10 @@ public class BoardListItem {
         this.boardTitleImage = boardListViewEntity.getTitleImage();
         this.favoriteCount = boardListViewEntity.getFavoriteCount();
         this.commentCount = boardListViewEntity.getCommentCount();
-       this.writeDatetime = boardListViewEntity.getWriteDatetime();
-       this.writerNickname = boardListViewEntity.getWriterNickname();
-       this.writerProfileImage = boardListViewEntity.getWriterProfileImage();
+        this.viewCount = boardListViewEntity.getViewCount();
+        this.writeDatetime = boardListViewEntity.getWriteDatetime();
+        this.writerNickname = boardListViewEntity.getWriterNickname();
+        this.writerProfileImage = boardListViewEntity.getWriterProfileImage();
     }
 
     public static List<BoardListItem> getList(List<BoardListViewEntity> boardListViewEntities) {
