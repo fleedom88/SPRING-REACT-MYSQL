@@ -20,6 +20,7 @@ import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetSearchBoardListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetUserBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetCommentListResponseDto;
 import com.fleedom88.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
@@ -89,6 +90,14 @@ public class BoardController {
         @PathVariable(value = "preSearchWord", required = false) String preSearchWord
     ){
         ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(searchWord, preSearchWord);
+        return response;
+    }
+
+    @GetMapping("/user-board-list/{email}")
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(
+        @PathVariable String email
+    ){
+        ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(email);
         return response;
     }
 

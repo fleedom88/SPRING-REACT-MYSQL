@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public class GetRelationListResponseDto extends ResponseDto {
     
-    private List<String> relativeList;
+    private List<String> relativeWordList;
 
     private GetRelationListResponseDto(List<GetRelationListResultSet> resultSets){
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
@@ -27,7 +27,7 @@ public class GetRelationListResponseDto extends ResponseDto {
             relativeWordList.add(relativeWord);
         }
 
-        this.relativeList = relativeWordList;
+        this.relativeWordList = relativeWordList;
     }
 
     public static ResponseEntity<GetRelationListResponseDto> success(List<GetRelationListResultSet> resultSets){

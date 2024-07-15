@@ -8,7 +8,7 @@ import Pagination from 'components/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { SEARCH_PATH } from 'constant';
 import { getLatestBoardListRequest, getPopularListRequest, getTop3BoardListRequest } from 'apis';
-import { GetLastestBoardListResponseDto, GetTop3BoardListResponseDto } from 'apis/response/board';
+import { GetLatestBoardListResponseDto, GetTop3BoardListResponseDto } from 'apis/response/board';
 import { ResponseDto } from 'apis/response';
 import { usePagination } from 'hooks';
 import { GetPopularListResponseDto } from 'apis/response/search';
@@ -69,13 +69,13 @@ const MainBottom = () => {
   const [popularWordList, setPopularWordList] = useState<string[]>([]);
 
   //              function: get lastest board list response 처리 함수       //
-  const getLastestBoardListResponse = (responseBody: GetLastestBoardListResponseDto | ResponseDto | null) => {
+  const getLastestBoardListResponse = (responseBody: GetLatestBoardListResponseDto | ResponseDto | null) => {
     if(!responseBody) return;
     const { code } = responseBody;
     if (code === 'DBE') alert('데이터베이스 오류입니다.');
     if ( code !== 'SU') return;
 
-    const { latestList } = responseBody as GetLastestBoardListResponseDto;
+    const { latestList } = responseBody as GetLatestBoardListResponseDto;
     setTotalList(latestList);
   }
   //              function: get popular list response 처리 함수       //

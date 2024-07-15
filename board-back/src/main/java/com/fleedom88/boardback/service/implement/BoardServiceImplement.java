@@ -19,6 +19,8 @@ import com.fleedom88.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetSearchBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetTop3BoardListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetUserBoardListResponseDto;
+import com.fleedom88.boardback.dto.response.board.GetUserBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
@@ -150,6 +152,23 @@ public class BoardServiceImplement implements BoardService {
         }
         return GetTop3BoardListResponseDto.success(boardListViewEntities);
     }
+    
+    @Override
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email) {
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+        try {
+            boolean existedUser = userRepository.existsByEmail(email);
+            if(!existedUser) GetUserBoardListResponseDto.noExistUser();
+            boardListViewEntities = boardListViewRepository.findByWriterEmailOrderByWriteDatetimeDesc(email);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetUserBoardListResponseDto.success(boardListViewEntities);
+    }
+
+
 
     @Override
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord,String preSearchWord) {
@@ -343,6 +362,5 @@ public class BoardServiceImplement implements BoardService {
         }
         return DeleteBoardResponseDto.success();
     }
-
 
 }
