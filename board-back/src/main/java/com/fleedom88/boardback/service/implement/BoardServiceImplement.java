@@ -20,7 +20,6 @@ import com.fleedom88.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetSearchBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.GetUserBoardListResponseDto;
-import com.fleedom88.boardback.dto.response.board.GetUserBoardListResponseDto;
 import com.fleedom88.boardback.dto.response.board.PostBoardReponseDto;
 import com.fleedom88.boardback.dto.response.board.PostCommentResponseDto;
 import com.fleedom88.boardback.dto.response.board.PutFavoriteResponseDto;
