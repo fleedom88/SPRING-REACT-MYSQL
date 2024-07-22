@@ -23,15 +23,16 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImplement implements AuthService { // 구현체
 
     
-    // @Autowired // bean에 등록되어있는 것들이 자동으로 주입됨, 필드
+    // @Autowired // bean에 등록되어있는 것들이 자동으로 주입됨, (필드)     @Repository bean에 등록됨
     // private UserRepository userRepository; 
+
     // @Autowired
-    // public AuthServiceImplement(UserRepository userRepository){//생성자
+    // public AuthServiceImplement(UserRepository userRepository){//생성자, 레포지토리가 빈 상황이 발생하지 않아서 가장 선호됨
     //     this.userRepository = userRepository;
     // }
     
     // @Autowired
-    // public void setUserRepository(UserRepository userRepository){//세터
+    // public void setUserRepository(UserRepository userRepository){//(세터)
         //     this.userRepository = userRepository;
         // }
     

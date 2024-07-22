@@ -32,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:8080")
     public ResponseEntity<? super SignInResponseDto> signIn(
         @RequestBody @Valid SignInRequestDto requestBody
     ){

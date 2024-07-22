@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "search_log")
 @Table(name = "search_log")
-public class SearchLogEntity { //클래스명 SearchLog만 적으면 알아서 찾아감
+public class SearchLogEntity { //클래스명 SearchLog만 적어도 알아서 찾아감
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int sequence;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.fleedom88.boardback.entity.UserEntity;
 
-@Repository
+@Repository                                             //entity, primary key의 type
 public interface UserRepository extends JpaRepository<UserEntity, String>{
 
     boolean existsByEmail(String email);
